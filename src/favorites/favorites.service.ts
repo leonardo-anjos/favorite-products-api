@@ -98,6 +98,7 @@ export class FavoritesService {
   async removeFavorite(clientId: number, productId: string) {
     const favorite = await this.favoriteRepo.findOne({
       where: { client: { id: clientId }, productId },
+      relations: ['client'],
     });
 
     if (!favorite) throw new NotFoundException('Favorite product not found');

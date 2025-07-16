@@ -69,7 +69,7 @@ export class ClientsService {
   }
 
   async findOne(id: number) {
-    return this.clientRepo.findOne({ where: { id } });
+    return this.clientRepo.findOne({ where: { id }, relations: ['favorites'] });
   }
 
   async update(id: number, dto: UpdateClientDto) {

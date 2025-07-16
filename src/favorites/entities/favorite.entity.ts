@@ -1,7 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  Index,
+} from 'typeorm';
 import { Client } from 'src/clients/entities/client.entity';
 
 @Entity()
+@Index(['productId'])
+@Index(['client'])
 export class Favorite {
   @PrimaryGeneratedColumn()
   id: number;
