@@ -129,7 +129,10 @@
         body: JSON.stringify({ name, email })
       });
       const data = await res.json();
-      document.getElementById('create-client-result').textContent = res.ok ? 'Client created: ' + data.id : data.message || 'Error';
+      document.getElementById('create-client-result').textContent = res.ok ? 'Client created: ' + data.name : data.message || 'Error';
+      if (res.ok) {
+        form.reset();
+      }
       loadClients();
       loadClientsForSelect();
       loadFavoritesClientsForSelect();
