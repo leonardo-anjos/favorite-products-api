@@ -22,7 +22,7 @@ export class ClientsService {
       where: { email: dto.email },
     });
     if (exists) {
-      throw new ConflictException('E-mail já cadastrado');
+      throw new ConflictException('E-mail already registered');
     }
 
     const client = this.clientRepo.create(dto);
@@ -43,19 +43,19 @@ export class ClientsService {
         where: { email: dto.email },
       });
       if (exists && exists.id !== id) {
-        throw new ConflictException('E-mail já cadastrado');
+        throw new ConflictException('E-mail already registered');
       }
     }
     const client = await this.clientRepo.preload({ id, ...dto });
     if (!client) {
-      throw new NotFoundException('Cliente não encontrado');
+      throw new NotFoundException('Client not found');
     }
     return this.clientRepo.save(client);
   }
 
   async remove(id: number) {
     const client = await this.findOne(id);
-    if (!client) throw new NotFoundException('Cliente não encontrado');
+    if (!client) throw new NotFoundException('Client not found');
     return this.clientRepo.remove(client);
   }
 }

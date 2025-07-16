@@ -11,6 +11,6 @@ export class IsAlphaSpaces implements ValidatorConstraintInterface {
   }
 
   defaultMessage(_args: ValidationArguments) {
-    return 'O nome deve conter apenas letras e espaços.';
+    return 'Name must contain only letters and spaces.';
   }
 }

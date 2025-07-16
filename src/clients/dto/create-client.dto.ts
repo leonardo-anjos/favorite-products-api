@@ -10,16 +10,16 @@ import { IsAlphaSpaces } from '../../validators/is-alpha-spaces.validator';
 
 export class CreateClientDto {
   @IsNotEmpty()
-  @MinLength(3, { message: 'O nome deve ter pelo menos 3 caracteres.' })
+  @MinLength(3, { message: 'Name must be at least 3 characters long.' })
   @Validate(IsAlphaSpaces, {
-    message: 'O nome deve conter apenas letras e espaços.',
+    message: 'Name must contain only letters and spaces.',
   })
   name: string;
 
   @IsEmail()
-  @Matches(/^\S+@\S+\.\S+$/, { message: 'E-mail não pode conter espaços.' })
+  @Matches(/^\S+@\S+\.\S+$/, { message: 'E-mail must not contain spaces.' })
   @Validate(IsNotTempEmail, {
-    message: 'E-mail de domínio temporário não é permitido.',
+    message: 'Temporary email domains are not allowed.',
   })
   email: string;
 }

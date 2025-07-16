@@ -25,6 +25,6 @@ export class IsNotTempEmail implements ValidatorConstraintInterface {
   }
 
   defaultMessage(_args: ValidationArguments) {
-    return 'E-mail de domínio temporário não é permitido.';
+    return 'Temporary email domains are not allowed.';
   }
 }

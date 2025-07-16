@@ -27,12 +27,12 @@ export class FavoritesService {
       where: { id: clientId },
       relations: ['favorites'],
     });
-    if (!client) throw new NotFoundException('Cliente não encontrado');
+    if (!client) throw new NotFoundException('Client not found');
 
     const exists = await this.favoriteRepo.findOne({
       where: { client: { id: clientId }, productId },
     });
-    if (exists) throw new ConflictException('Produto já está nos favoritos');
+    if (exists) throw new ConflictException('Product is already in favorites');
 
     const product = await this.fakestore.fetchProductById(productId);
 
@@ -53,7 +53,7 @@ export class FavoritesService {
       where: { id: clientId },
       relations: ['favorites'],
     });
-    if (!client) throw new NotFoundException('Cliente não encontrado');
+    if (!client) throw new NotFoundException('Client not found');
 
     return client.favorites;
   }
@@ -63,8 +63,7 @@ export class FavoritesService {
       where: { client: { id: clientId }, productId },
     });
 
-    if (!favorite)
-      throw new NotFoundException('Produto favorito não encontrado');
+    if (!favorite) throw new NotFoundException('Favorite product not found');
     return this.favoriteRepo.remove(favorite);
   }
 }

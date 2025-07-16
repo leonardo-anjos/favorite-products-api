@@ -4,7 +4,7 @@ import { ProductExists } from '../../validators/product-exists.validator';
 export class CreateFavoriteDto {
   @IsString()
   @IsNotEmpty()
-  @Matches(/^\d+$/, { message: 'O productId deve ser um número positivo.' })
-  @Validate(ProductExists, { message: 'O produto informado não existe.' })
+  @Matches(/^\d+$/, { message: 'productId must be a positive number.' })
+  @Validate(ProductExists, { message: 'The specified product does not exist.' })
   productId: string;
 }

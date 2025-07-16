@@ -42,7 +42,7 @@ export class FakestoreService {
       const parsed = ProductDataSchema.safeParse(data);
       if (!parsed.success) {
         throw new Error(
-          'Resposta da API externa inválida: ' +
+          'Invalid response from external API: ' +
             JSON.stringify(parsed.error.issues),
         );
       }
@@ -65,7 +65,7 @@ export class FakestoreService {
       };
     } catch (e) {
       throw new NotFoundException(
-        `Produto ID ${productId} não encontrado ou resposta inválida da FakeStore API: ${(e as Error).message}`,
+        `Product ID ${productId} not found or invalid response from FakeStore API: ${(e as Error).message}`,
       );
     }
   }
@@ -77,13 +77,13 @@ export class FakestoreService {
       );
       const data = (response as { data: unknown }).data;
       if (!Array.isArray(data)) {
-        throw new Error('Resposta da API externa inválida');
+        throw new Error('Invalid response from external API');
       }
       return data.map((item) => {
         const parsed = ProductDataSchema.safeParse(item);
         if (!parsed.success) {
           throw new Error(
-            'Produto inválido na resposta da API externa: ' +
+            'Invalid product in response from external API: ' +
               JSON.stringify(parsed.error.issues),
           );
         }
@@ -107,7 +107,7 @@ export class FakestoreService {
       });
     } catch (e) {
       throw new NotFoundException(
-        'Erro ao buscar produtos da FakeStore API: ' + (e as Error).message,
+        'Error fetching products from FakeStore API: ' + (e as Error).message,
       );
     }
   }

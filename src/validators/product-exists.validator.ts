@@ -16,6 +16,6 @@ export class ProductExists implements ValidatorConstraintInterface {
   }
 
   defaultMessage(_args: ValidationArguments) {
-    return 'O produto informado não existe.';
+    return 'The specified product does not exist.';
   }
 }

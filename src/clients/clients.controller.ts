@@ -29,7 +29,7 @@ export class ClientsController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const client = await this.clientsService.findOne(+id);
-    if (!client) throw new NotFoundException('Cliente não encontrado');
+    if (!client) throw new NotFoundException('Client not found');
     return client;
   }
 
