@@ -9,6 +9,7 @@ import { DatabaseModule } from './database/database.module';
 import { ClientsModule } from './clients/clients.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { ExternalApiModule } from './external-api/external-api.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ExternalApiModule } from './external-api/external-api.module';
     ClientsModule,
     FavoritesModule,
     ExternalApiModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
