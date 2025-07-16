@@ -19,7 +19,7 @@ export class FavoritesController {
     @Param('clientId') clientId: string,
     @Body() dto: CreateFavoriteDto,
   ) {
-    return this.favoritesService.addFavorite(+clientId, dto.productId);
+    return this.favoritesService.addFavorite(clientId, dto.productId);
   }
 
   @Get()
@@ -31,7 +31,7 @@ export class FavoritesController {
     @Query('sort') sort?: string,
     @Query('order') order?: string,
   ) {
-    return this.favoritesService.getFavorites(+clientId, {
+    return this.favoritesService.getFavorites(clientId, {
       page: page ? parseInt(page, 10) : 1,
       limit: limit ? parseInt(limit, 10) : 10,
       search,
@@ -45,6 +45,6 @@ export class FavoritesController {
     @Param('clientId') clientId: string,
     @Param('productId') productId: string,
   ) {
-    return this.favoritesService.removeFavorite(+clientId, productId);
+    return this.favoritesService.removeFavorite(clientId, productId);
   }
 }

@@ -10,8 +10,8 @@ import { Favorite } from 'src/favorites/entities/favorite.entity';
 @Entity()
 @Index(['email'], { unique: true })
 export class Client {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;

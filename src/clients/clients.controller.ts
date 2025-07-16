@@ -41,18 +41,18 @@ export class ClientsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const client = await this.clientsService.findOne(+id);
+    const client = await this.clientsService.findOne(id);
     if (!client) throw new NotFoundException('Client not found');
     return client;
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateClientDto) {
-    return this.clientsService.update(+id, dto);
+    return this.clientsService.update(id, dto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.clientsService.remove(+id);
+    return this.clientsService.remove(id);
   }
 }

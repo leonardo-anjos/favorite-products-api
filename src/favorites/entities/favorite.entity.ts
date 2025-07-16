@@ -11,8 +11,8 @@ import { Client } from 'src/clients/entities/client.entity';
 @Index(['productId'])
 @Index(['client'])
 export class Favorite {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   productId: string;

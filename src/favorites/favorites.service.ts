@@ -22,7 +22,7 @@ export class FavoritesService {
     private readonly fakestore: FakestoreService,
   ) {}
 
-  async addFavorite(clientId: number, productId: string) {
+  async addFavorite(clientId: string, productId: string) {
     const client = await this.clientRepo.findOne({
       where: { id: clientId },
       relations: ['favorites'],
@@ -49,7 +49,7 @@ export class FavoritesService {
   }
 
   async getFavorites(
-    clientId: number,
+    clientId: string,
     {
       page = 1,
       limit = 10,
@@ -95,7 +95,7 @@ export class FavoritesService {
     };
   }
 
-  async removeFavorite(clientId: number, productId: string) {
+  async removeFavorite(clientId: string, productId: string) {
     const favorite = await this.favoriteRepo.findOne({
       where: { client: { id: clientId }, productId },
       relations: ['client'],

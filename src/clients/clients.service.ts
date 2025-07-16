@@ -64,15 +64,15 @@ export class ClientsService {
       total,
       page,
       limit,
-      lastPage: Math.ceil(total / limit),
+      lastPage: total === 0 ? 0 : Math.max(1, Math.ceil(total / limit)),
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return this.clientRepo.findOne({ where: { id }, relations: ['favorites'] });
   }
 
-  async update(id: number, dto: UpdateClientDto) {
+  async update(id: string, dto: UpdateClientDto) {
     if (dto.email) {
       const exists = await this.clientRepo.findOne({
         where: { email: dto.email },
@@ -88,7 +88,7 @@ export class ClientsService {
     return this.clientRepo.save(client);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const client = await this.findOne(id);
     if (!client) throw new NotFoundException('Client not found');
     return this.clientRepo.remove(client);
