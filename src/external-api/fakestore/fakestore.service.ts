@@ -72,7 +72,7 @@ export class FakestoreService {
         };
         await this.cacheManager.set(cacheKey, product, 60); // cache por 60s
       }
-      return product as ProductData;
+      return product;
     } catch (e) {
       throw new NotFoundException(
         `Product ID ${productId} not found or invalid response from FakeStore API: ${(e as Error).message}`,
@@ -122,7 +122,7 @@ export class FakestoreService {
         );
         await this.cacheManager.set(cacheKey, products, 60); // cache por 60s
       }
-      return products as ProductData[];
+      return products;
     } catch (e) {
       throw new NotFoundException(
         'Error fetching products from FakeStore API: ' + (e as Error).message,
