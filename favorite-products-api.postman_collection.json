@@ -1,0 +1,145 @@
+{
+  "info": {
+    "name": "Favorite Products API",
+    "_postman_id": "f1b2c3d4-e5f6-7890-abcd-1234567890ef",
+    "description": "Coleção completa para testar a API de Clientes e Favoritos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Criar Cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao@email.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/clients",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["clients"]
+            }
+          }
+        },
+        {
+          "name": "Listar Todos os Clientes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/clients",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["clients"]
+            }
+          }
+        },
+        {
+          "name": "Buscar Cliente por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/clients/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["clients", "1"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Cliente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João da Silva\",\n  \"email\": \"joaosilva@email.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/clients/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["clients", "1"]
+            }
+          }
+        },
+        {
+          "name": "Remover Cliente",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:3000/clients/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["clients", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Favoritos",
+      "item": [
+        {
+          "name": "Adicionar Produto aos Favoritos",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"1\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/clients/1/favorites",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["clients", "1", "favorites"]
+            }
+          }
+        },
+        {
+          "name": "Listar Favoritos de um Cliente",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/clients/1/favorites",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["clients", "1", "favorites"]
+            }
+          }
+        },
+        {
+          "name": "Remover Produto dos Favoritos",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:3000/clients/1/favorites/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["clients", "1", "favorites", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+} 
