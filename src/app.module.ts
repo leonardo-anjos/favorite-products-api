@@ -4,8 +4,8 @@ import { ConfigModule } from '@nestjs/config';
 import postgresConfig from './database/postgres.config';
 import { DatabaseModule } from './database/database.module';
 
-// import { ClientsModule } from './clients/clients.module';
-// import { FavoritesModule } from './favorites/favorites.module';
+import { ClientsModule } from './clients/clients.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -15,8 +15,8 @@ import { DatabaseModule } from './database/database.module';
       envFilePath: '.env',
     }),
     DatabaseModule,
-    // ClientsModule,
-    // FavoritesModule,
+    ClientsModule,
+    FavoritesModule,
   ],
 })
 export class AppModule {}
