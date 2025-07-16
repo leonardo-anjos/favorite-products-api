@@ -1,10 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+
+import postgresConfig from './database/postgres.config';
+import { DatabaseModule } from './database/database.module';
+
+// import { ClientsModule } from './clients/clients.module';
+// import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [postgresConfig],
+      envFilePath: '.env',
+    }),
+    DatabaseModule,
+    // ClientsModule,
+    // FavoritesModule,
+  ],
 })
 export class AppModule {}
