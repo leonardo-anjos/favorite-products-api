@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 
 import postgresConfig from './database/postgres.config';
+import redisConfig from './database/redis.config';
 import { DatabaseModule } from './database/database.module';
 
 import { ClientsModule } from './clients/clients.module';
@@ -20,15 +21,23 @@ import { AuthModule } from './auth/auth.module';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [postgresConfig],
+      load: [postgresConfig, redisConfig],
       envFilePath: '.env',
     }),
-    CacheModule.register({
+    CacheModule.registerAsync({
       isGlobal: true,
-      store: redisStore,
-      host: 'localhost',
-      port: 6379,
-      ttl: 60,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const redis = config.get('redis');
+        return {
+          store: redisStore,
+          host: redis.host,
+          port: redis.port,
+          password: redis.password,
+          ttl: redis.ttl,
+        };
+      },
     }),
     DatabaseModule,
     ClientsModule,
