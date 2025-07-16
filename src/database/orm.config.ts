@@ -1,7 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-// import { Client } from 'src/clients/entities/client.entity';
-// import { Favorite } from 'src/favorites/entities/favorite.entity';
+import { Client } from 'src/clients/entities/client.entity';
+import { Favorite } from 'src/favorites/entities/favorite.entity';
 
 export const ormConfig = async (
   configService: ConfigService,
@@ -12,7 +12,7 @@ export const ormConfig = async (
   username: configService.get<string>('postgres.username'),
   password: configService.get<string>('postgres.password'),
   database: configService.get<string>('postgres.database'),
-  // entities: [Client, Favorite],
+  entities: [Client, Favorite],
   synchronize: true,
   autoLoadEntities: true,
 });

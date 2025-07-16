@@ -1,7 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { z } from 'zod';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 const ProductDataSchema = z.object({
   id: z.number(),
@@ -31,9 +33,15 @@ interface ProductData {
 
 @Injectable()
 export class FakestoreService {
-  constructor(private readonly http: HttpService) {}
+  constructor(
+    private readonly http: HttpService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+  ) {}
 
   async fetchProductById(productId: string): Promise<ProductData> {
+    const cacheKey = `fakestore:product:${productId}`;
+    const cached = await this.cacheManager.get<ProductData>(cacheKey);
+    if (cached) return cached;
     try {
       const response: unknown = await firstValueFrom(
         this.http.get(`https://fakestoreapi.com/products/${productId}`),
@@ -47,7 +55,7 @@ export class FakestoreService {
         );
       }
       const d = parsed.data;
-      return {
+      const result: ProductData = {
         id: d.id,
         title: d.title,
         price: d.price,
@@ -63,6 +71,8 @@ export class FakestoreService {
             ? d.rating.count
             : null,
       };
+      await this.cacheManager.set(cacheKey, result, 300); // 5 min
+      return result;
     } catch (e) {
       throw new NotFoundException(
         `Product ID ${productId} not found or invalid response from FakeStore API: ${(e as Error).message}`,
@@ -71,6 +81,9 @@ export class FakestoreService {
   }
 
   async fetchAllProducts(): Promise<ProductData[]> {
+    const cacheKey = 'fakestore:products:all';
+    const cached = await this.cacheManager.get<ProductData[]>(cacheKey);
+    if (cached) return cached;
     try {
       const response: unknown = await firstValueFrom(
         this.http.get(`https://fakestoreapi.com/products`),
@@ -79,7 +92,7 @@ export class FakestoreService {
       if (!Array.isArray(data)) {
         throw new Error('Invalid response from external API');
       }
-      return data.map((item) => {
+      const result = data.map((item) => {
         const parsed = ProductDataSchema.safeParse(item);
         if (!parsed.success) {
           throw new Error(
@@ -105,6 +118,8 @@ export class FakestoreService {
               : null,
         };
       });
+      await this.cacheManager.set(cacheKey, result, 300); // 5 min
+      return result;
     } catch (e) {
       throw new NotFoundException(
         'Error fetching products from FakeStore API: ' + (e as Error).message,
