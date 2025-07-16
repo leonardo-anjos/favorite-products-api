@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Delete, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Delete,
+  Param,
+  Body,
+  Query,
+} from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 
@@ -15,8 +23,21 @@ export class FavoritesController {
   }
 
   @Get()
-  getFavorites(@Param('clientId') clientId: string) {
-    return this.favoritesService.getFavorites(+clientId);
+  getFavorites(
+    @Param('clientId') clientId: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('sort') sort?: string,
+    @Query('order') order?: string,
+  ) {
+    return this.favoritesService.getFavorites(+clientId, {
+      page: page ? parseInt(page, 10) : 1,
+      limit: limit ? parseInt(limit, 10) : 10,
+      search,
+      sort,
+      order,
+    });
   }
 
   @Delete(':productId')

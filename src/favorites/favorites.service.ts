@@ -48,14 +48,51 @@ export class FavoritesService {
     return this.favoriteRepo.save(favorite);
   }
 
-  async getFavorites(clientId: number) {
+  async getFavorites(
+    clientId: number,
+    {
+      page = 1,
+      limit = 10,
+      search,
+      sort,
+      order,
+    }: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      sort?: string;
+      order?: string;
+    } = {},
+  ) {
     const client = await this.clientRepo.findOne({
       where: { id: clientId },
-      relations: ['favorites'],
     });
     if (!client) throw new NotFoundException('Client not found');
 
-    return client.favorites;
+    const query = this.favoriteRepo
+      .createQueryBuilder('favorite')
+      .innerJoin('favorite.client', 'client')
+      .where('client.id = :clientId', { clientId });
+    if (search) {
+      query.andWhere('favorite.title ILIKE :search', { search: `%${search}%` });
+    }
+    if (sort) {
+      query.orderBy(
+        `favorite.${sort}`,
+        order?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC',
+      );
+    } else {
+      query.orderBy('favorite.id', 'ASC');
+    }
+    query.skip((page - 1) * limit).take(limit);
+    const [data, total] = await query.getManyAndCount();
+    return {
+      data,
+      total,
+      page,
+      limit,
+      lastPage: Math.ceil(total / limit),
+    };
   }
 
   async removeFavorite(clientId: number, productId: string) {

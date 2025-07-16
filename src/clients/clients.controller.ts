@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
@@ -22,8 +23,20 @@ export class ClientsController {
   }
 
   @Get()
-  findAll() {
-    return this.clientsService.findAll();
+  findAll(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('sort') sort?: string,
+    @Query('order') order?: string,
+  ) {
+    return this.clientsService.findAll({
+      page: page ? parseInt(page, 10) : 1,
+      limit: limit ? parseInt(limit, 10) : 10,
+      search,
+      sort,
+      order,
+    });
   }
 
   @Get(':id')

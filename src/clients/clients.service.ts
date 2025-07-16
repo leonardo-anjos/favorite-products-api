@@ -29,8 +29,43 @@ export class ClientsService {
     return this.clientRepo.save(client);
   }
 
-  findAll() {
-    return this.clientRepo.find();
+  async findAll({
+    page = 1,
+    limit = 10,
+    search,
+    sort,
+    order,
+  }: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    sort?: string;
+    order?: string;
+  }) {
+    const query = this.clientRepo.createQueryBuilder('client');
+    if (search) {
+      query.andWhere(
+        'client.name ILIKE :search OR client.email ILIKE :search',
+        { search: `%${search}%` },
+      );
+    }
+    if (sort) {
+      query.orderBy(
+        `client.${sort}`,
+        order?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC',
+      );
+    } else {
+      query.orderBy('client.id', 'ASC');
+    }
+    query.skip((page - 1) * limit).take(limit);
+    const [data, total] = await query.getManyAndCount();
+    return {
+      data,
+      total,
+      page,
+      limit,
+      lastPage: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: number) {
