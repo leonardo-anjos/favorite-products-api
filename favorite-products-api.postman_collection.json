@@ -1,145 +1,545 @@
 {
-  "info": {
-    "name": "Favorite Products API",
-    "_postman_id": "f1b2c3d4-e5f6-7890-abcd-1234567890ef",
-    "description": "Coleção completa para testar a API de Clientes e Favoritos",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Clientes",
-      "item": [
-        {
-          "name": "Criar Cliente",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao@email.com\"\n}"
-            },
-            "url": {
-              "raw": "http://localhost:3000/clients",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
-              "path": ["clients"]
-            }
-          }
-        },
-        {
-          "name": "Listar Todos os Clientes",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:3000/clients",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
-              "path": ["clients"]
-            }
-          }
-        },
-        {
-          "name": "Buscar Cliente por ID",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:3000/clients/1",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
-              "path": ["clients", "1"]
-            }
-          }
-        },
-        {
-          "name": "Atualizar Cliente",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"João da Silva\",\n  \"email\": \"joaosilva@email.com\"\n}"
-            },
-            "url": {
-              "raw": "http://localhost:3000/clients/1",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
-              "path": ["clients", "1"]
-            }
-          }
-        },
-        {
-          "name": "Remover Cliente",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "http://localhost:3000/clients/1",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
-              "path": ["clients", "1"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Favoritos",
-      "item": [
-        {
-          "name": "Adicionar Produto aos Favoritos",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"productId\": \"1\"\n}"
-            },
-            "url": {
-              "raw": "http://localhost:3000/clients/1/favorites",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
-              "path": ["clients", "1", "favorites"]
-            }
-          }
-        },
-        {
-          "name": "Listar Favoritos de um Cliente",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:3000/clients/1/favorites",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
-              "path": ["clients", "1", "favorites"]
-            }
-          }
-        },
-        {
-          "name": "Remover Produto dos Favoritos",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "http://localhost:3000/clients/1/favorites/1",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
-              "path": ["clients", "1", "favorites", "1"]
-            }
-          }
-        }
-      ]
-    }
-  ]
-} 
+	"info": {
+		"_postman_id": "8f79ff36-713b-4000-bf91-2422faac97ba",
+		"name": "favorite-products-api",
+		"description": "Coleção completa para testar a API de Clientes e Favoritos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3658201"
+	},
+	"item": [
+		{
+			"name": "clients",
+			"item": [
+				{
+					"name": "create client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{favorite-products-api-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{$randomFullName}}\",\n  \"email\": \"{{$randomEmail}}\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/clients",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list clients",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{favorite-products-api-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/clients?page=1&limit=10&sort=name&order=desc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"clients"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "john",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "name"
+								},
+								{
+									"key": "order",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get client by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{favorite-products-api-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/clients/36a57dad-5ce4-4758-9f94-b8e1ef775262",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"clients",
+								"36a57dad-5ce4-4758-9f94-b8e1ef775262"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{favorite-products-api-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Sandra da Silva\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/clients/36a57dad-5ce4-4758-9f94-b8e1ef775262",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"clients",
+								"36a57dad-5ce4-4758-9f94-b8e1ef775262"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{favorite-products-api-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/clients/9334eebe-987d-4a3b-87e9-e25e267e0f28",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"clients",
+								"9334eebe-987d-4a3b-87e9-e25e267e0f28"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "favorites",
+			"item": [
+				{
+					"name": "add favorite to client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{favorite-products-api-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/clients/1/favorites",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"clients",
+								"1",
+								"favorites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list all favorites from client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{favorite-products-api-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/clients/22ebe45f-9bfd-41ea-963b-c9790d311317/favorites?page=1&limit=10&sort=price&order=asc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"clients",
+								"22ebe45f-9bfd-41ea-963b-c9790d311317",
+								"favorites"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "book",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "price"
+								},
+								{
+									"key": "order",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove favorite from client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{favorite-products-api-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/clients/1/favorites/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"clients",
+								"1",
+								"favorites",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ExternalAPI-FakeStore",
+			"item": [
+				{
+					"name": "list products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{favorite-products-api-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/external-products?page=1&limit=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"external-products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "backpack",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "price",
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": "desc",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "men%27s%20clothing",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get product by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{favorite-products-api-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/external-products/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"external-products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"novo_usuario\",\r\n    \"password\": \"Senha123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.collectionVariables.set(\"favorite-products-api-token\", json.access_token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"novo_usuario\",\r\n    \"password\": \"Senha123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "favorite-products-api-token",
+			"value": ""
+		}
+	]
+}
