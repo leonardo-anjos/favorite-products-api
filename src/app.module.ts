@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 
 import { ClientsModule } from './clients/clients.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { ExternalApiModule } from './external-api/external-api.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     DatabaseModule,
     ClientsModule,
     FavoritesModule,
+    ExternalApiModule,
   ],
 })
 export class AppModule {}

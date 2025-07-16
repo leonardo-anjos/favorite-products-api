@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 
 import { Favorite } from './entities/favorite.entity';
 import { Client } from 'src/clients/entities/client.entity';
-import { FavoritesIntegration } from './favorites.integration';
+import { FakestoreService } from 'src/external-api/fakestore/fakestore.service';
 
 @Injectable()
 export class FavoritesService {
@@ -19,7 +19,7 @@ export class FavoritesService {
     @InjectRepository(Client)
     private readonly clientRepo: Repository<Client>,
 
-    private readonly integration: FavoritesIntegration,
+    private readonly fakestore: FakestoreService,
   ) {}
 
   async addFavorite(clientId: number, productId: string) {
@@ -34,7 +34,7 @@ export class FavoritesService {
     });
     if (exists) throw new ConflictException('Produto já está nos favoritos');
 
-    const product = await this.integration.fetchProductById(productId);
+    const product = await this.fakestore.fetchProductById(productId);
 
     const favorite = this.favoriteRepo.create({
       client: { id: client.id },
@@ -55,14 +55,7 @@ export class FavoritesService {
     });
     if (!client) throw new NotFoundException('Cliente não encontrado');
 
-    return client.favorites.map((fav) => ({
-      id: fav.id,
-      productId: fav.productId,
-      title: fav.title,
-      image: fav.image,
-      price: fav.price,
-      review: fav.review,
-    }));
+    return client.favorites;
   }
 
   async removeFavorite(clientId: number, productId: string) {
