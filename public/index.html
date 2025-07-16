@@ -28,8 +28,9 @@
     th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
     th { background: #eee; }
     .actions button { margin-right: 0.5rem; }
-    .favorite-btn { background: #007bff; color: #fff; border: none; cursor: pointer; }
-    .favorite-btn[disabled] { background: #aaa; }
+    .favorite-btn { background: #28a745; color: #fff; border: none; cursor: pointer; }
+    .unfavorite-btn { background: #dc3545; color: #fff; border: none; cursor: pointer; }
+    .favorite-btn[disabled], .unfavorite-btn[disabled] { background: #aaa; }
   </style>
 </head>
 <body>
@@ -52,13 +53,30 @@
     </div>
     <div class="section">
       <h2>Clients</h2>
-      <button onclick="loadClients()">Reload Clients</button>
+      <form id="clients-filter-form" style="display:flex;gap:1rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;">
+        <label>Search: <input type="text" id="clients-search"></label>
+        <label>Sort:
+          <select id="clients-sort">
+            <option value="name">Name</option>
+            <option value="email">Email</option>
+          </select>
+        </label>
+        <label>Order:
+          <select id="clients-order">
+            <option value="asc">ASC</option>
+            <option value="desc">DESC</option>
+          </select>
+        </label>
+        <label>Page: <input type="number" id="clients-page" min="1" value="1" style="width:4em;"></label>
+        <label>Limit: <input type="number" id="clients-limit" min="1" value="5" style="width:4em;"></label>
+      </form>
       <table id="clients-table">
         <thead>
           <tr><th>Name</th><th>Email</th><th>Actions</th></tr>
         </thead>
         <tbody></tbody>
       </table>
+      <div id="clients-pagination" style="margin-top:1rem;"></div>
       <div id="edit-client-section" style="display:none; margin-top:1rem;"></div>
     </div>
   </div>
@@ -66,7 +84,6 @@
   <div id="tab-products" class="tab-content">
     <div class="section">
       <h2>FakeStore Products</h2>
-      <button onclick="loadProducts()">Reload Products</button>
       <label>Client:
         <select id="favorite-client-select"></select>
       </label>
@@ -95,13 +112,30 @@
       <label>Client:
         <select id="favorites-client-select" onchange="loadFavoritesForClient()"></select>
       </label>
-      <button onclick="loadFavoritesForClient()">Reload Favorites</button>
+      <form id="favorites-filter-form" style="display:flex;gap:1rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;">
+        <label>Search: <input type="text" id="favorites-search"></label>
+        <label>Sort:
+          <select id="favorites-sort">
+            <option value="title">Title</option>
+            <option value="price">Price</option>
+          </select>
+        </label>
+        <label>Order:
+          <select id="favorites-order">
+            <option value="asc">ASC</option>
+            <option value="desc">DESC</option>
+          </select>
+        </label>
+        <label>Page: <input type="number" id="favorites-page" min="1" value="1" style="width:4em;"></label>
+        <label>Limit: <input type="number" id="favorites-limit" min="1" value="5" style="width:4em;"></label>
+      </form>
       <table id="favorites-table">
         <thead>
-          <tr><th>Product ID</th><th>Title</th><th>Price</th><th>Image</th><th>Review</th><th>Actions</th></tr>
+          <tr><th>Title</th><th>Price</th><th>Image</th><th>Review</th><th>Actions</th></tr>
         </thead>
         <tbody></tbody>
       </table>
+      <div id="favorites-pagination" style="margin-top:1rem;"></div>
       <div id="favorites-result"></div>
     </div>
   </div>
@@ -113,6 +147,15 @@
       document.querySelectorAll('.tab-content').forEach(tabDiv => tabDiv.classList.remove('active'));
       document.querySelector('.tab-btn[onclick*="' + tab + '"]').classList.add('active');
       document.getElementById('tab-' + tab).classList.add('active');
+      // Reload data for the selected tab
+      if (tab === 'clients') {
+        loadClients();
+      } else if (tab === 'products') {
+        loadClientsForSelect();
+        loadProducts();
+      } else if (tab === 'favorites') {
+        loadFavoritesClientsForSelect();
+      }
     }
 
     const api = '';
@@ -140,7 +183,19 @@
 
     // Load Clients
     async function loadClients() {
-      const res = await fetch(api + '/clients?limit=100');
+      const search = document.getElementById('clients-search').value;
+      const sort = document.getElementById('clients-sort').value;
+      const order = document.getElementById('clients-order').value;
+      const page = document.getElementById('clients-page').value;
+      const limit = document.getElementById('clients-limit').value;
+      const params = new URLSearchParams({
+        page,
+        limit,
+        search,
+        sort,
+        order
+      });
+      const res = await fetch(api + '/clients?' + params.toString());
       const data = await res.json();
       const tbody = document.querySelector('#clients-table tbody');
       tbody.innerHTML = '';
@@ -155,8 +210,31 @@
           </td>`;
         tbody.appendChild(tr);
       });
-      document.getElementById('edit-client-section').style.display = 'none';
+      renderClientsPagination(data.page, data.lastPage);
     }
+    // Pagination for clients
+    function renderClientsPagination(page, lastPage) {
+      const div = document.getElementById('clients-pagination');
+      div.innerHTML = '';
+      if (lastPage <= 1) return;
+      for (let p = 1; p <= lastPage; p++) {
+        const btn = document.createElement('button');
+        btn.textContent = p;
+        btn.disabled = p == page;
+        btn.onclick = () => {
+          document.getElementById('clients-page').value = p;
+          loadClients();
+        };
+        div.appendChild(btn);
+      }
+    }
+    // Filter events for clients
+    document.getElementById('clients-filter-form').oninput = function() {
+      document.getElementById('clients-page').value = 1;
+      loadClients();
+    };
+    document.getElementById('clients-page').onchange = loadClients;
+    document.getElementById('clients-limit').onchange = loadClients;
     loadClients();
 
     // Delete Client
@@ -217,7 +295,7 @@
       (products.data || products).forEach(product => {
         const isFav = favorites.includes(String(product.id));
         const btn = isFav
-          ? `<button class="favorite-btn" onclick="unfavorite('${clientId}', '${product.id}')">Unfavorite</button>`
+          ? `<button class="unfavorite-btn" onclick="unfavorite('${clientId}', '${product.id}')">Unfavorite</button>`
           : `<button class="favorite-btn" onclick="addFavorite('${product.id}')">Favorite</button>`;
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -254,27 +332,59 @@
     // Load Favorites for selected client
     async function loadFavoritesForClient() {
       const clientId = document.getElementById('favorites-client-select').value;
+      const page = document.getElementById('favorites-page').value;
+      const limit = document.getElementById('favorites-limit').value;
+      const search = document.getElementById('favorites-search').value;
+      const sort = document.getElementById('favorites-sort').value;
+      const order = document.getElementById('favorites-order').value;
       if (!clientId) {
         document.querySelector('#favorites-table tbody').innerHTML = '';
+        document.getElementById('favorites-pagination').innerHTML = '';
         return;
       }
-      const res = await fetch(api + `/clients/${clientId}/favorites?limit=100`);
+      const params = new URLSearchParams({ page, limit, search, sort, order });
+      const res = await fetch(api + `/clients/${clientId}/favorites?` + params.toString());
       const data = await res.json();
       const tbody = document.querySelector('#favorites-table tbody');
       tbody.innerHTML = '';
       (data.data || []).forEach(fav => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${fav.productId}</td>
           <td>${fav.title}</td>
           <td>$${fav.price}</td>
           <td><img src="${fav.image}" alt="" width="40"></td>
           <td>${fav.review || ''}</td>
-          <td><button onclick="unfavorite('${clientId}', '${fav.productId}')">Unfavorite</button></td>
+          <td><button class="unfavorite-btn" onclick="unfavorite('${clientId}', '${fav.productId}')">Unfavorite</button></td>
         `;
         tbody.appendChild(tr);
       });
+      renderFavoritesPagination(data.page, data.lastPage);
     }
+    // Pagination for favorites
+    function renderFavoritesPagination(page, lastPage) {
+      const div = document.getElementById('favorites-pagination');
+      div.innerHTML = '';
+      if (lastPage <= 1) return;
+      for (let p = 1; p <= lastPage; p++) {
+        const btn = document.createElement('button');
+        btn.textContent = p;
+        btn.disabled = p == page;
+        btn.onclick = () => {
+          document.getElementById('favorites-page').value = p;
+          loadFavoritesForClient();
+        };
+        div.appendChild(btn);
+      }
+    }
+    // Filter events for favorites
+    document.getElementById('favorites-filter-form').oninput = function() {
+      document.getElementById('favorites-page').value = 1;
+      loadFavoritesForClient();
+    };
+    document.getElementById('favorites-page').onchange = loadFavoritesForClient;
+    document.getElementById('favorites-limit').onchange = loadFavoritesForClient;
+    loadFavoritesForClient();
+
     async function unfavorite(clientId, productId) {
       if (!confirm('Remove from favorites?')) return;
       await fetch(api + `/clients/${clientId}/favorites/${productId}`, { method: 'DELETE' });
