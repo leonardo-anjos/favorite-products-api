@@ -87,6 +87,25 @@
       <label>Client:
         <select id="favorite-client-select"></select>
       </label>
+      <form id="products-filter-form" style="display:flex;gap:1rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;">
+        <label>Search: <input type="text" id="products-search"></label>
+        <label>Sort:
+          <select id="products-sort">
+            <option value="price">Price</option>
+            <option value="review">Review</option>
+            <option value="ratingCount">Rating Count</option>
+          </select>
+        </label>
+        <label>Order:
+          <select id="products-order">
+            <option value="asc">ASC</option>
+            <option value="desc">DESC</option>
+          </select>
+        </label>
+        <label>Category: <input type="text" id="products-category"></label>
+        <label>Page: <input type="number" id="products-page" min="1" value="1" style="width:4em;"></label>
+        <label>Limit: <input type="number" id="products-limit" min="1" value="10" style="width:4em;"></label>
+      </form>
       <table id="products-table">
         <thead>
           <tr>
@@ -102,6 +121,7 @@
         </thead>
         <tbody></tbody>
       </table>
+      <div id="products-pagination" style="margin-top:1rem;"></div>
       <div id="favorite-result"></div>
     </div>
   </div>
@@ -280,9 +300,17 @@
     // Load Products
     async function loadProducts() {
       const clientId = document.getElementById('favorite-client-select').value;
-      // Fetch all products
-      const res = await fetch('https://fakestoreapi.com/products');
-      const products = await res.json();
+      const search = document.getElementById('products-search').value;
+      const sort = document.getElementById('products-sort').value;
+      const order = document.getElementById('products-order').value;
+      const page = document.getElementById('products-page').value;
+      const limit = document.getElementById('products-limit').value;
+      const category = document.getElementById('products-category').value;
+      const params = new URLSearchParams({ page, limit, search, sort, order });
+      if (category) params.append('category', category);
+      // Fetch products from backend
+      const res = await fetch('/external-products?' + params.toString());
+      const data = await res.json();
       // Fetch client favorites
       let favorites = [];
       if (clientId) {
@@ -292,7 +320,7 @@
       }
       const tbody = document.querySelector('#products-table tbody');
       tbody.innerHTML = '';
-      (products.data || products).forEach(product => {
+      (data.data || []).forEach(product => {
         const isFav = favorites.includes(String(product.id));
         const btn = isFav
           ? `<button class="unfavorite-btn" onclick="unfavorite('${clientId}', '${product.id}')">Unfavorite</button>`
@@ -304,13 +332,35 @@
           <td>${product.description}</td>
           <td>${product.category}</td>
           <td><img src="${product.image}" alt="" width="40"></td>
-          <td>${product.rating && product.rating.rate !== undefined ? product.rating.rate : ''}</td>
-          <td>${product.rating && product.rating.count !== undefined ? product.rating.count : ''}</td>
+          <td>${product.review || ''}</td>
+          <td>${product.ratingCount ?? ''}</td>
           <td>${btn}</td>
         `;
         tbody.appendChild(tr);
       });
+      renderProductsPagination(data.page, data.lastPage);
     }
+    function renderProductsPagination(page, lastPage) {
+      const div = document.getElementById('products-pagination');
+      div.innerHTML = '';
+      if (lastPage <= 1) return;
+      for (let p = 1; p <= lastPage; p++) {
+        const btn = document.createElement('button');
+        btn.textContent = p;
+        btn.disabled = p == page;
+        btn.onclick = () => {
+          document.getElementById('products-page').value = p;
+          loadProducts();
+        };
+        div.appendChild(btn);
+      }
+    }
+    document.getElementById('products-filter-form').oninput = function() {
+      document.getElementById('products-page').value = 1;
+      loadProducts();
+    };
+    document.getElementById('products-page').onchange = loadProducts;
+    document.getElementById('products-limit').onchange = loadProducts;
     // Update products when client changes
     document.getElementById('favorite-client-select').addEventListener('change', loadProducts);
     loadProducts();
