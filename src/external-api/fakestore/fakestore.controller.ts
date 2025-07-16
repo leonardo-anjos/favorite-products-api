@@ -1,9 +1,7 @@
-import { Controller, Get, Query, Param, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Get, Query, Param } from '@nestjs/common';
 import { FakestoreService, ProductData } from './fakestore.service';
 
 @Controller('external-products')
-@UseGuards(AuthGuard('jwt'))
 export class FakestoreController {
   constructor(private readonly fakestore: FakestoreService) {}
 
