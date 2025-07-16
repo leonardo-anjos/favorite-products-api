@@ -23,15 +23,16 @@ export class FavoritesService {
   ) {}
 
   async addFavorite(clientId: string, productId: string) {
-    const client = await this.clientRepo.findOne({
-      where: { id: clientId },
-      relations: ['favorites'],
-    });
+    const [client, exists] = await Promise.all([
+      this.clientRepo.findOne({
+        where: { id: clientId },
+        relations: ['favorites'],
+      }),
+      this.favoriteRepo.findOne({
+        where: { client: { id: clientId }, productId },
+      }),
+    ]);
     if (!client) throw new NotFoundException('Client not found');
-
-    const exists = await this.favoriteRepo.findOne({
-      where: { client: { id: clientId }, productId },
-    });
     if (exists) throw new ConflictException('Product is already in favorites');
 
     const product = await this.fakestore.fetchProductById(productId);

@@ -42,7 +42,9 @@ export class ClientsService {
     sort?: string;
     order?: string;
   }) {
-    const query = this.clientRepo.createQueryBuilder('client');
+    const query = this.clientRepo
+      .createQueryBuilder('client')
+      .select(['client.id', 'client.name', 'client.email']); // Seleciona apenas campos necessários
     if (search) {
       query.andWhere(
         'client.name ILIKE :search OR client.email ILIKE :search',
@@ -69,7 +71,7 @@ export class ClientsService {
   }
 
   async findOne(id: string) {
-    return this.clientRepo.findOne({ where: { id }, relations: ['favorites'] });
+    return this.clientRepo.findOne({ where: { id } });
   }
 
   async update(id: string, dto: UpdateClientDto) {
