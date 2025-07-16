@@ -38,7 +38,13 @@ $ npm i
 $ npm run start:dev
 ```
 
-DEMO FILES: [demo](./files/)
+SCREEN CAPTURE FRONTEND (without jwt/auth - public/index.html): ![screen-capture](./files/screen-capture.gif)
+
+LOGIN: ![login](./files/login.png)
+
+LIST USER - AUTH SUCESS: ![list-clients-sucess-auth](./files/list-clients-sucess-auth.png)
+
+LIST USER - AUTH ERROR: ![list-clients-error-auth](./files/list-clients-error-auth.png)
 
 TIP: [postman collection](./favorite-products-api.postman_collection.json)
 
