@@ -18,7 +18,7 @@ const ProductDataSchema = z.object({
     .optional(),
 });
 
-interface ProductData {
+export interface ProductData {
   id: number;
   title: string;
   price: number;
