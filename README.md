@@ -38,6 +38,8 @@ $ npm i
 $ npm run start:dev
 ```
 
+DEMO FILES: [demo](./files/)
+
 TIP: [postman collection](./favorite-products-api.postman_collection.json)
 
 ### how to use api - step by step 
