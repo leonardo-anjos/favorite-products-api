@@ -48,19 +48,6 @@ tip: [postman collection](./favorite-products-api.postman_collection.json)
   the codebase includes both unit and integration tests to ensure correctness, reliability, and to catch regressions early in the development process.
 
 ```
-# docker compose database commands
-
-run database
-$ docker compose up -d 
-
-stop database
-$ docker compose down 
-
-view database logs
-$ docker compose logs -f 
-```
-
-```
 # to run application
 
 node version v22.16.0
@@ -68,6 +55,10 @@ node version v22.16.0
 $ cp .env.example .env
 $ npm i
 $ npm run start:dev
+
+# docker
+$ docker compose up 
+$ docker compose down 
 ```
 
 coverage ![test-cov](./files/test-cov.png)
