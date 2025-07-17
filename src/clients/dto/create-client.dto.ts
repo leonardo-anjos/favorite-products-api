@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -9,6 +10,7 @@ import { IsNotTempEmail } from '../../validators/is-not-temp-email.validator';
 import { IsAlphaSpaces } from '../../validators/is-alpha-spaces.validator';
 
 export class CreateClientDto {
+  @ApiProperty({ example: 'John Doe' })
   @IsNotEmpty()
   @MinLength(3, { message: 'Name must be at least 3 characters long.' })
   @Validate(IsAlphaSpaces, {
@@ -16,6 +18,7 @@ export class CreateClientDto {
   })
   name: string;
 
+  @ApiProperty({ example: 'john@gmail.com' })
   @IsEmail()
   @Matches(/^\S+@\S+\.\S+$/, { message: 'E-mail must not contain spaces.' })
   @Validate(IsNotTempEmail, {

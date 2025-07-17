@@ -1,11 +1,14 @@
 import { Controller, Get, Query, Param } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { FakestoreService, ProductData } from './fakestore.service';
 
+@ApiTags('external-products')
 @Controller('external-products')
 export class FakestoreController {
   constructor(private readonly fakestore: FakestoreService) {}
 
   @Get()
+  @ApiOperation({ summary: 'list all products from fakestore with filters' })
   async getAll(
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
@@ -45,6 +48,7 @@ export class FakestoreController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'get a product by ID from fakestore' })
   async getById(@Param('id') id: string) {
     return this.fakestore.fetchProductById(id);
   }
